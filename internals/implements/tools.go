@@ -6,6 +6,6 @@ import (
 )
 
 var (
-	MongoDBManager tools.InterfaceManger = tools.NewMongoDBManager(LineMongo.Config.MongoDBSetting)
-	LineBotManager tools.InterfaceManger = tools.NewLineBotManager(LineMongo.Config.LineBotSetting)
+	MongoDBManager = tools.NewMongoDBManager(LineMongo.Config.MongoDBSetting)
+	LineBotManager = tools.NewLineBotManager(LineMongo.Config.LineBotSetting)
 )
