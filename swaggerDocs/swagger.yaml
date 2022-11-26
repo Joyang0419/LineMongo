@@ -1,0 +1,196 @@
+definitions:
+  lineController.CallbackErrorResponse:
+    properties:
+      data:
+        example: Please Provide Line signature
+        type: string
+      statusCode:
+        example: 400
+        type: integer
+    type: object
+  lineController.CallbackSuccessResponse:
+    properties:
+      data:
+        example: Line web socket Success
+        type: string
+      statusCode:
+        example: 200
+        type: integer
+    type: object
+  lineController.GetUserMessagesErrorResponse:
+    properties:
+      data:
+        example: Please Provide userID
+        type: string
+      statusCode:
+        example: 400
+        type: integer
+    type: object
+  lineController.GetUserMessagesSuccessResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/lineController.userMessagesData'
+        type: array
+      statusCode:
+        example: 400
+        type: integer
+    type: object
+  lineController.PushMessagesBody:
+    properties:
+      messages:
+        example:
+        - Hello
+        - ' world'
+        items:
+          type: string
+        type: array
+      userID:
+        example: Ubbd98d38fbfc1fe0e7db93a2d8bc9c34
+        type: string
+    type: object
+  lineController.PushMessagesErrorResponse:
+    properties:
+      data:
+        example: Wrong userID
+        type: string
+      statusCode:
+        example: 400
+        type: integer
+    type: object
+  lineController.PushMessagesSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/lineController.PushMessagesBody'
+      statusCode:
+        example: 200
+        type: integer
+    type: object
+  lineController.ReplyMessagesBody:
+    properties:
+      messages:
+        example:
+        - Hello
+        - ' world'
+        items:
+          type: string
+        type: array
+      replyToken:
+        example: bd2b0c9ee9124ef9814913165457afce
+        type: string
+    type: object
+  lineController.ReplyMessagesErrorResponse:
+    properties:
+      data:
+        example: Wrong ReplyToken
+        type: string
+      statusCode:
+        example: 400
+        type: integer
+    type: object
+  lineController.ReplyMessagesSuccessResponse:
+    properties:
+      data:
+        $ref: '#/definitions/lineController.ReplyMessagesBody'
+      statusCode:
+        example: 400
+        type: integer
+    type: object
+  lineController.userMessagesData:
+    properties:
+      createdAt:
+        example: "2022-11-26T14:28:58.526+00:00"
+        type: string
+      message:
+        example: Hello World
+        type: string
+    type: object
+host: 0.0.0.0:8080
+info:
+  contact: {}
+  description: LineMongo swagger
+  title: LineMongo
+  version: "1.0"
+paths:
+  /line/callback:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lineController.CallbackSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/lineController.CallbackErrorResponse'
+  /line/pushMessages:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: PushMessagesRequired
+        in: body
+        name: PushMessagesBody
+        required: true
+        schema:
+          $ref: '#/definitions/lineController.PushMessagesBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lineController.PushMessagesSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/lineController.PushMessagesErrorResponse'
+  /line/replyMessages:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ReplyMessagesRequired
+        in: body
+        name: ReplyMessagesBody
+        required: true
+        schema:
+          $ref: '#/definitions/lineController.ReplyMessagesBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lineController.ReplyMessagesSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/lineController.ReplyMessagesErrorResponse'
+  /line/userMessages:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - default: '"Ubbd98d38fbfc1fe0e7db93a2d8bc9c34"'
+        description: 用戶ID
+        in: query
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lineController.GetUserMessagesSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/lineController.GetUserMessagesErrorResponse'
+swagger: "2.0"

@@ -21,8 +21,13 @@ type MongoDBManager struct {
 	Client  *mongo.Client
 }
 
-func (Manager *MongoDBManager) Init() {
+func (Manager *MongoDBManager) CreateContext() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(Manager.Setting.TimeoutSecs)*time.Second)
+	return ctx, cancel
+}
+
+func (Manager *MongoDBManager) Init() {
+	ctx, cancel := Manager.CreateContext()
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(
 		"mongodb://"+Manager.Setting.IP+":"+strconv.Itoa(Manager.Setting.PORT)))
@@ -33,7 +38,7 @@ func (Manager *MongoDBManager) Init() {
 }
 
 func (Manager *MongoDBManager) IsConnected() bool {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(Manager.Setting.TimeoutSecs)*time.Second)
+	ctx, cancel := Manager.CreateContext()
 	defer cancel()
 	err := Manager.Client.Ping(ctx, readpref.Primary())
 	if err != nil {
