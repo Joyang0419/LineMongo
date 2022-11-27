@@ -3,6 +3,7 @@ package lineService
 import (
 	"LineMongo/internals/repos/userMessageRepo"
 	"LineMongo/internals/tools"
+	"errors"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 	"net/http"
 )
@@ -24,6 +25,10 @@ func (service *LineService) ReceiveEvents(request *http.Request) (err error) {
 }
 
 func (service *LineService) PushMessages(userID string, messages []string) error {
+	userMessages := service.UserMessageRepo.Get(userMessageRepo.Filter{Key: "source.userid", Value: userID})
+	if len(userMessages) == 0 {
+		return errors.New("wrong userID")
+	}
 	linebotMessages := make([]linebot.SendingMessage, 0, len(messages))
 	for _, message := range messages {
 		linebotMessages = append(linebotMessages, linebot.NewTextMessage(message))
@@ -33,12 +38,16 @@ func (service *LineService) PushMessages(userID string, messages []string) error
 	if err != nil {
 		return err
 	}
-	// todo
-	// 先去找userID 存在
 	return nil
 }
 
 func (service *LineService) ReplyMessages(replyToken string, messages []string) error {
+	userMessages := service.UserMessageRepo.Get(userMessageRepo.Filter{Key: "replytoken", Value: replyToken})
+
+	if len(userMessages) == 0 {
+		return errors.New("wrong replytoken")
+	}
+
 	linebotMessages := make([]linebot.SendingMessage, 0, len(messages))
 	for _, message := range messages {
 		linebotMessages = append(linebotMessages, linebot.NewTextMessage(message))
@@ -48,9 +57,14 @@ func (service *LineService) ReplyMessages(replyToken string, messages []string) 
 	if err != nil {
 		return err
 	}
-	// todo
-	// replytoken 存在
 	return nil
+}
+
+func (service *LineService) GetUserMessages(userID string) []map[string]any {
+	return service.UserMessageRepo.Get(userMessageRepo.Filter{
+		Key:   "source.userid",
+		Value: userID,
+	})
 }
 
 func NewLineService(userMessageRepo userMessageRepo.InterfaceUserMessageRepo,

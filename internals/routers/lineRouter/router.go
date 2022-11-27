@@ -10,4 +10,5 @@ func Route(router *gin.Engine) {
 	lineGroup.POST("callback", implements.LineController.Callback)
 	lineGroup.POST("pushMessages", implements.LineController.PushMessages)
 	lineGroup.POST("replyMessages", implements.LineController.ReplyMessages)
+	lineGroup.GET("userMessages", implements.LineController.GetUserMessages)
 }

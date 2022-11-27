@@ -19,6 +19,7 @@ func NewV1LineController(LineService lineService.InterfaceLineService) *V1 {
 
 // Callback
 // @Router /line/callback [get]
+// @Tags: Line
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} CallbackSuccessResponse
@@ -38,6 +39,7 @@ func (controller V1) Callback(c *gin.Context) {
 
 // PushMessages
 // @Router /line/pushMessages [post]
+// @Tags: Line
 // @Accept  json
 // @Produce  json
 // @param PushMessagesBody body PushMessagesBody true "PushMessagesRequired"
@@ -65,6 +67,7 @@ func (controller V1) PushMessages(c *gin.Context) {
 }
 
 // ReplyMessages
+// @Tags: Line
 // @Router /line/replyMessages [post]
 // @Accept  json
 // @Produce  json
@@ -93,14 +96,20 @@ func (controller V1) ReplyMessages(c *gin.Context) {
 }
 
 // GetUserMessages
+// @Tags: Line
 // @Router /line/userMessages [get]
 // @Accept  json
 // @Produce  json
-// @param userID query string true "用戶ID" default("Ubbd98d38fbfc1fe0e7db93a2d8bc9c34")
+// @param userID query string true "用戶ID" default(Ubbd98d38fbfc1fe0e7db93a2d8bc9c34)
 // @Success 200 {object} GetUserMessagesSuccessResponse
-// @Failure 400 {object} GetUserMessagesErrorResponse
 func (controller V1) GetUserMessages(c *gin.Context) {
-	_ = c
-	//userid
-	//messages
+	userID := c.Query("userID")
+	if userID == "" {
+		errResponse := GetUserMessagesErrorResponse{StatusCode: http.StatusBadRequest, Data: "Please Provide userID"}
+		errResponse.GinErrorResponse(c, errResponse)
+		return
+	}
+	successResponse := GetUserMessagesSuccessResponse{StatusCode: http.StatusOK,
+		Data: controller.LineService.GetUserMessages(userID)}
+	successResponse.GinSuccessResponse(c, successResponse)
 }

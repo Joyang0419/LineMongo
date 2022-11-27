@@ -40,14 +40,9 @@ type ReplyMessagesErrorResponse struct {
 	routers.BaseRouteResponse
 }
 
-type userMessagesData struct {
-	CreatedAt string `example:"2022-11-26T14:28:58.526+00:00"`
-	Message   string `example:"Hello World"`
-}
-
 type GetUserMessagesSuccessResponse struct {
 	StatusCode int `example:"400"`
-	Data       []userMessagesData
+	Data       []map[string]any
 	routers.BaseRouteResponse
 }
 

@@ -16,6 +16,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "accounts"
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -113,7 +116,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "\"Ubbd98d38fbfc1fe0e7db93a2d8bc9c34\"",
+                        "default": "Ubbd98d38fbfc1fe0e7db93a2d8bc9c34",
                         "description": "用戶ID",
                         "name": "userID",
                         "in": "query",
@@ -125,12 +128,6 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/lineController.GetUserMessagesSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/lineController.GetUserMessagesErrorResponse"
                         }
                     }
                 }
@@ -164,26 +161,14 @@
                 }
             }
         },
-        "lineController.GetUserMessagesErrorResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "string",
-                    "example": "Please Provide userID"
-                },
-                "statusCode": {
-                    "type": "integer",
-                    "example": 400
-                }
-            }
-        },
         "lineController.GetUserMessagesSuccessResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/lineController.userMessagesData"
+                        "type": "object",
+                        "additionalProperties": {}
                     }
                 },
                 "statusCode": {
@@ -277,19 +262,6 @@
                 "statusCode": {
                     "type": "integer",
                     "example": 400
-                }
-            }
-        },
-        "lineController.userMessagesData": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string",
-                    "example": "2022-11-26T14:28:58.526+00:00"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Hello World"
                 }
             }
         }

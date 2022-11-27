@@ -12,17 +12,23 @@ type MongoUserMessageRepo struct {
 	MongoDBManager *tools.MongoDBManager
 }
 
-func (repo *MongoUserMessageRepo) Get() (UserMessageDTOs []models.UserMessageDTO) {
+func (repo *MongoUserMessageRepo) Get(filters ...Filter) (UserMessageDTOs []map[string]any) {
 	collection := repo.MongoDBManager.Client.Database("test").Collection("userMessages")
-	filter := bson.D{{"replytoken", "hello"}}
+	var bsonFilters bson.D
+	for _, filter := range filters {
+		bsonFilters = append(bsonFilters, bson.E{
+			Key:   filter.Key,
+			Value: filter.Value,
+		})
+	}
 	ctx, cancel := repo.MongoDBManager.CreateContext()
 	defer cancel()
-	cursor, err := collection.Find(ctx, filter)
+	cursor, err := collection.Find(ctx, bsonFilters)
 	if err != nil {
 		log.Error("MongoUserMessageRepo Get error: ", err)
 	}
 	for cursor.Next(ctx) {
-		var result models.UserMessageDTO
+		var result map[string]any
 		err := cursor.Decode(&result)
 		if err != nil {
 			log.Fatal(err)

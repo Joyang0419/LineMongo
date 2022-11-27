@@ -17,20 +17,12 @@ definitions:
         example: 200
         type: integer
     type: object
-  lineController.GetUserMessagesErrorResponse:
-    properties:
-      data:
-        example: Please Provide userID
-        type: string
-      statusCode:
-        example: 400
-        type: integer
-    type: object
   lineController.GetUserMessagesSuccessResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/lineController.userMessagesData'
+          additionalProperties: {}
+          type: object
         type: array
       statusCode:
         example: 400
@@ -96,15 +88,6 @@ definitions:
         example: 400
         type: integer
     type: object
-  lineController.userMessagesData:
-    properties:
-      createdAt:
-        example: "2022-11-26T14:28:58.526+00:00"
-        type: string
-      message:
-        example: Hello World
-        type: string
-    type: object
 host: 0.0.0.0:8080
 info:
   contact: {}
@@ -127,6 +110,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/lineController.CallbackErrorResponse'
+      tags:
+      - accounts
   /line/pushMessages:
     post:
       consumes:
@@ -176,7 +161,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - default: '"Ubbd98d38fbfc1fe0e7db93a2d8bc9c34"'
+      - default: Ubbd98d38fbfc1fe0e7db93a2d8bc9c34
         description: 用戶ID
         in: query
         name: userID
@@ -189,8 +174,4 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/lineController.GetUserMessagesSuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/lineController.GetUserMessagesErrorResponse'
 swagger: "2.0"
